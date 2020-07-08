@@ -22,7 +22,20 @@ const handleProfilePage = (req, res) => {
 };
 
 const handleSignin = (req, res) => {
-  res.send("ok");
+  res.render("pages/signin");
+};
+
+const handleName = (req, res) => {
+  let firstName = req.body.firstName;
+  let foundUser = users.find((user) => {
+    return firstName === user.name;
+  });
+
+  if (foundUser !== undefined) {
+    res.redirect(`/users/${foundUser._id}`);
+  } else {
+    res.redirect("*");
+  }
 };
 
 // declare the 404 function
@@ -41,7 +54,8 @@ express()
   // endpoints
   .get("/", handleHomepage)
   .get("/users/:id", handleProfilePage)
-  .post("/signin", handleSignin)
+  .get("/signin", handleSignin)
+  .post("/getname", handleName)
 
   // a catchall endpoint that will send the 404 message.
   .get("*", handleFourOhFour)
