@@ -26,7 +26,11 @@ const handleProfilePage = (req, res) => {
 };
 
 const handleSignin = (req, res) => {
-  res.render("pages/signin", { currentUser });
+  if (!currentUser.name) {
+    res.render("pages/signin", { currentUser });
+  } else {
+    res.status(200).redirect("/");
+  }
 };
 
 const handleName = (req, res) => {
