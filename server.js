@@ -8,21 +8,25 @@ const { users } = require("./data/users");
 let currentUser = {};
 
 const handleHomepage = (req, res) => {
-  res.status(200).render("pages/homepage", { users: users });
+  res.status(200).render("pages/homepage", { users: users, currentUser });
 };
 
 const handleProfilePage = (req, res) => {
   const id = req.params.id;
-  currentUser = users.find((user) => id === user._id);
+  const currentProfile = users.find((user) => id === user._id);
 
-  let friendsList = currentUser.friends.map((friendId) => {
+  let friendsList = currentProfile.friends.map((friendId) => {
     return users.find((user) => friendId === user._id);
   });
-  res.render("pages/profile", { user: currentUser, friendsList });
+  res.render("pages/profile", {
+    user: currentProfile,
+    friendsList,
+    currentUser,
+  });
 };
 
 const handleSignin = (req, res) => {
-  res.render("pages/signin");
+  res.render("pages/signin", { currentUser });
 };
 
 const handleName = (req, res) => {
@@ -31,10 +35,12 @@ const handleName = (req, res) => {
     return firstName === user.name;
   });
 
+  currentUser = foundUser;
+
   if (foundUser !== undefined) {
-    res.redirect(`/users/${foundUser._id}`);
+    res.status(200).redirect(`/users/${foundUser._id}`);
   } else {
-    res.redirect("*");
+    res.status(404).redirect("*");
   }
 };
 
